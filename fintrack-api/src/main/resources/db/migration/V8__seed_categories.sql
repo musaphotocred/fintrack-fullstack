@@ -1,0 +1,16 @@
+INSERT INTO categories (name, icon, type, is_system, user_id, created_at) VALUES
+    ('Salary', 'banknotes', 'INCOME', TRUE, NULL, NOW()),
+    ('Freelance', 'briefcase', 'INCOME', TRUE, NULL, NOW()),
+    ('Business Income', 'building-office', 'INCOME', TRUE, NULL, NOW()),
+    ('Other Income', 'plus-circle', 'INCOME', TRUE, NULL, NOW()),
+    ('Groceries', 'shopping-cart', 'EXPENSE', TRUE, NULL, NOW()),
+    ('Rent', 'home', 'EXPENSE', TRUE, NULL, NOW()),
+    ('Transport', 'truck', 'EXPENSE', TRUE, NULL, NOW()),
+    ('Utilities', 'bolt', 'EXPENSE', TRUE, NULL, NOW()),
+    ('Entertainment', 'film', 'EXPENSE', TRUE, NULL, NOW()),
+    ('Healthcare', 'heart', 'EXPENSE', TRUE, NULL, NOW()),
+    ('Education', 'academic-cap', 'EXPENSE', TRUE, NULL, NOW()),
+    ('Savings', 'banknotes', 'EXPENSE', TRUE, NULL, NOW()),
+    ('Clothing', 'shopping-bag', 'EXPENSE', TRUE, NULL, NOW()),
+    ('Restaurants', 'cake', 'EXPENSE', TRUE, NULL, NOW()),
+    ('Other Expense', 'minus-circle', 'EXPENSE', TRUE, NULL, NOW());
