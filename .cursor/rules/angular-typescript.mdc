@@ -1,0 +1,78 @@
+---
+description: Angular 19 + TypeScript coding standards for FinTrack. Auto-applied to all .ts and .html files.
+globs: ["**/*.ts", "**/*.html"]
+alwaysApply: true
+---
+
+# Angular 19 + TypeScript Rules — FinTrack
+
+## Identity
+You are an expert Angular 19 developer using TypeScript, RxJS, and Jest. You write clean, readable, production-grade code. You think step by step before answering. You never guess — if you don't know, you say so.
+
+## TypeScript Standards
+- Enable `strict: true` in `tsconfig.json` — no exceptions
+- Never use `any` — use `unknown` with runtime type guards instead
+- Explicitly type ALL function parameters and return values
+- Prefer `interface` for object shapes that can be extended
+- Use `type` for unions, intersections, and primitive aliases
+- Use discriminated unions instead of ambiguous union types
+- Use utility types (`Partial<T>`, `Pick<T>`, `Readonly<T>`) wherever they reduce duplication
+- Use `readonly` on properties that should not be mutated
+- Document complex types with JSDoc `/** */` comments
+
+## Angular-Specific Rules
+- All components must be **standalone** — no NgModules
+- Use `input()`, `output()`, `model()` signal-based APIs (Angular 19) over `@Input()` / `@Output()` decorators
+- Use `computed()` for derived state — never recompute in templates
+- Use `effect()` sparingly — only for side effects that cannot live in a service
+- Prefer `OnPush` change detection on every component: `changeDetection: ChangeDetectionStrategy.OnPush`
+- Use `@if`, `@for`, `@switch` control flow (Angular 17+ syntax) — never `*ngIf`, `*ngFor`
+- Use `trackBy` on every `@for` loop: `track item.id`
+- Lazy-load every feature module via the router — no eagerly loaded feature code
+- Use `inject()` function for dependency injection in constructors and `APP_INITIALIZER`
+- Never subscribe inside a component — use `async` pipe or signal-based approach
+- Always unsubscribe: prefer `takeUntilDestroyed()` from `@angular/core/rxjs-interop`
+
+## Code Structure Rules
+- **Max nesting depth: 2 levels** — extract deeper logic into a named function or service
+- **Max function parameters: 4** — use an options object if you need more
+- **Max executable lines per function: 50** — split larger functions
+- **Max line length: 120 characters**
+- Keep components thin — business logic belongs in services
+- File naming: `kebab-case.component.ts`, `kebab-case.service.ts`, `kebab-case.pipe.ts`
+- One component/service/pipe per file — no barrel re-exports that cause circular deps
+
+## RxJS Rules
+- Prefer `signal`-based state over BehaviorSubject where possible (Angular 19)
+- When using RxJS, always handle errors with `catchError` — never let streams die silently
+- Use `switchMap` for cancellable requests (search, navigation)
+- Use `concatMap` for ordered sequential operations
+- Use `exhaustMap` for preventing duplicate submissions (form submits)
+- Avoid `tap` for state mutations — use it only for side effects like logging
+- Use `debounceTime(300)` + `distinctUntilChanged()` on all search/filter inputs
+
+## Template Rules
+- No logic in templates beyond simple property access and pipe usage
+- No method calls in templates that are not pure (they re-run on every CD cycle)
+- Use `{{ amount | currencyZar }}` custom pipe for all currency display
+- Use `{{ date | relativeDate }}` custom pipe for all date display
+- Always provide `aria-label` on icon-only buttons
+- Every `<img>` must have a meaningful `alt` attribute
+- Use semantic HTML: `<nav>`, `<main>`, `<section>`, `<article>`, `<header>`, `<footer>`
+
+## File Imports
+- Always include all required imports — never leave dangling references
+- Group imports: Angular core → Angular modules → Third-party → Internal (feature) → Internal (shared)
+- Use path aliases (`@core/`, `@shared/`, `@features/`) configured in `tsconfig.json`
+
+## Testing
+- Test file naming: `*.spec.ts` co-located with the file under test
+- Use `describe` / `it` blocks with the pattern: `methodName_scenario_expectedBehaviour`
+- Mock all HTTP calls — never hit real endpoints in unit tests
+- Use `TestBed.configureTestingModule` with `HttpClientTestingModule` for services
+- Aim for 70%+ line coverage on all services and guards
+
+## When Refactoring
+- Keep all existing JSDoc comments intact
+- Do not change variable/method names unless explicitly asked
+- Preserve existing test structure — only add or fix, don't rewrite passing tests

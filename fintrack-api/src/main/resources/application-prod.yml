@@ -1,0 +1,30 @@
+spring:
+  datasource:
+    url: jdbc:mysql://${DB_HOST}:${DB_PORT}/${DB_NAME}?useSSL=true&requireSSL=true&serverTimezone=UTC
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    show-sql: false
+
+jwt:
+  secret: ${JWT_SECRET}
+  access-ttl-minutes: ${JWT_ACCESS_TTL_MINUTES:15}
+  refresh-ttl-days: ${JWT_REFRESH_TTL_DAYS:7}
+
+cors:
+  allowed-origins: ${ALLOWED_ORIGINS}
+
+aws:
+  region: ${AWS_REGION}
+  s3:
+    bucket: ${AWS_S3_BUCKET}
+  lambda:
+    pdf-function: ${AWS_LAMBDA_PDF_FUNCTION}
+  ses:
+    from-address: ${SES_FROM_ADDRESS}
+
+logging:
+  level:
+    com.fintrack: INFO
+    org.springframework.security: WARN

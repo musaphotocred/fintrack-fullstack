@@ -1,0 +1,101 @@
+---
+description: Project-wide code quality, naming, git, and API rules for FinTrack. Applied to all files.
+globs: ["**/*"]
+alwaysApply: true
+---
+
+# FinTrack — Project-Wide Code Quality Rules
+
+## Project Context
+- **App name:** FinTrack — personal finance management SPA
+- **Frontend:** Angular 19, TypeScript, Tailwind CSS v4, RxJS, Chart.js
+- **Backend:** Spring Boot 3.3, Java 21, MySQL 8, AWS Elastic Beanstalk
+- **Lambdas:** PDF generator, budget alert scheduler
+- **Repo:** `fintrack-fullstack` monorepo
+- **Frontend root:** `fintrack-ui/`
+- **Backend root:** `fintrack-api/`
+
+## Code Quality — Universal
+- Write correct, bug-free, fully working code — never output placeholder logic like `// TODO: implement`
+- Every function must do one thing — if you can describe it with "and", split it
+- Fail fast: validate inputs at the top of functions, return early on invalid state
+- Happy path last: handle errors and edge cases before the success path
+- No magic numbers or magic strings — extract to named constants
+- No commented-out code — delete it, that is what git history is for
+- No `console.log` left in committed code — use the logger service
+
+## Naming Conventions
+
+### Angular (TypeScript)
+- Components: `PascalCase` — `TransactionListComponent`
+- Services: `PascalCase` + `Service` suffix — `TransactionService`
+- Pipes: `PascalCase` + `Pipe` suffix — `CurrencyZarPipe`
+- Guards: `camelCase` + `Guard` suffix — `authGuard`
+- Signals: `camelCase` — `currentUser`, `isLoading`
+- Observables: `camelCase$` suffix — `transactions$`
+- Interfaces/Types: `PascalCase`, no `I` prefix — `Transaction`, not `ITransaction`
+- Enums: `PascalCase` with `SCREAMING_SNAKE_CASE` values — `BudgetStatus.ON_TRACK`
+- Files: `kebab-case` — `transaction-list.component.ts`
+
+### Java/Spring Boot
+- Classes: `PascalCase` — `TransactionService`
+- Methods: `camelCase` — `findByUserAndDateRange()`
+- Constants: `SCREAMING_SNAKE_CASE`
+- Packages: `lowercase` — `com.fintrack.transaction`
+- REST endpoints: `kebab-case` plural nouns — `/api/v1/transactions`
+- DTOs: suffix with `Request` or `Response` — `CreateTransactionRequest`, `TransactionResponse`
+
+## API Contract Rules (Frontend)
+- All API calls go through the service layer — components never call `HttpClient` directly
+- All responses unwrap the `ApiResponse<T>` wrapper using `.pipe(map(res => res.data))`
+- All paginated responses use `PagedResponse<T>` — never assume a flat array from list endpoints
+- Error handling: 404 and 422 are handled at the component level; 0, 403, 500 are handled by the interceptor
+- Never hardcode API URLs in components — always use `environment.apiBaseUrl`
+
+## API Contract Rules (Backend)
+- All responses wrapped in `ApiResponse<T>` — never return a raw object from a controller
+- All list endpoints are paginated — no endpoint returns an unbounded list
+- All endpoints validate input with Bean Validation — `@Valid` on every `@RequestBody`
+- All user-specific queries include `WHERE user_id = :currentUserId` — never trust a client-supplied userId
+- Soft deletes only: set `deleted_at = NOW()` — never `DELETE FROM` in application code
+
+## State Management Rules (Frontend)
+- Use Angular Signals for all UI state and shared service state
+- `signal()` for mutable state, `computed()` for derived values, `effect()` for side effects only
+- Loading state: every service that makes HTTP calls must expose a `loading` signal
+- Error state: errors are shown via `ToastService`, not stored in component state
+- No component stores data it doesn't own — always read from the service's signal
+
+## Git & Commit Rules
+- Use Conventional Commits: `feat:`, `fix:`, `docs:`, `chore:`, `refactor:`, `test:`, `style:`
+- Subject line max 72 characters, imperative mood: "Add auth interceptor" not "Added auth interceptor"
+- One logical change per commit — don't bundle unrelated changes
+- Never commit: `.env` files, `node_modules/`, compiled output, IDE config files (`.idea/`, `.vscode/`)
+- Branch naming: `feature/transaction-filters`, `fix/budget-calculation`, `chore/update-deps`
+
+## Security Rules
+- Never log passwords, tokens, or PII — scrub sensitive fields before logging
+- Never store the JWT secret or DB password in code — always read from environment variables
+- Never disable CORS broadly with `*` in production — use the `ALLOWED_ORIGINS` env var
+- All user inputs are validated server-side regardless of client-side validation
+- Pre-signed S3 URLs expire in 5 minutes — never extend this TTL
+
+## Performance Rules (Frontend)
+- Use `OnPush` on every component — this is mandatory, not optional
+- Lazy-load all feature routes — never import a feature component at the app level
+- Use `trackBy: item.id` on every `@for` loop rendering a list from the API
+- Debounce all search/filter inputs by 300ms before triggering an API call
+- Avoid subscribing to the same observable twice — use `shareReplay(1)` or a signal
+
+## Performance Rules (Backend)
+- Never use `SELECT *` — always name required columns in JPQL/SQL
+- All list queries must be paginated with `Pageable` — no `findAll()` without pagination
+- Add `@Index` on all foreign key columns and frequently filtered columns
+- Avoid N+1 queries — use `JOIN FETCH` or `@EntityGraph` where associations are needed
+- Log a `WARN` for any request that takes longer than 500ms (handled by `RequestLoggingAspect`)
+
+## Documentation Rules
+- Every public service method must have a JSDoc/Javadoc comment explaining what it does
+- Every REST endpoint must have a `@Operation` (SpringDoc) annotation with a summary
+- Every Angular `@Input` signal must have a JSDoc comment if its purpose isn't obvious from the name
+- The `README.md` at the repo root must always be up to date with setup instructions
