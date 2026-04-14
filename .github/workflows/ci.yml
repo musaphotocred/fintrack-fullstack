@@ -50,9 +50,7 @@ jobs:
           DB_PASSWORD: fintrack_pass
           JWT_SECRET: ci-test-secret-min-256-bits-xxxxxxxxxxxxxxxxxxxxx
           SPRING_PROFILES_ACTIVE: dev
-        run: |
-          chmod +x ./mvnw
-          ./mvnw -B verify
+        run: mvn -B verify
 
       - name: Upload test results
         if: always()
