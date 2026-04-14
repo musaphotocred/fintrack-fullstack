@@ -1,0 +1,144 @@
+---
+description: Tailwind CSS v4 UI/UX rules for FinTrack. Auto-applied to all template and style files.
+globs: ["**/*.html", "**/*.css", "**/tailwind.config.ts"]
+alwaysApply: true
+---
+
+# Tailwind CSS v4 UI/UX Rules — FinTrack
+
+## Core Philosophy
+- **Tailwind utility classes only** — no custom CSS unless it is physically impossible with utilities
+- **No inline `style=""`** — if you need a dynamic value, use `[style.width.%]="value"` Angular binding, not a style block
+- **Design tokens first** — all colours, spacing, shadows, and font sizes must come from `tailwind.config.ts`, never hardcoded hex values in templates
+- **Mobile-first always** — base classes are for mobile, `sm:` `md:` `lg:` `xl:` scale up
+
+## Tailwind v4 Config Rules
+- Use `@theme` directive in `styles.css` for CSS-first configuration (Tailwind v4 default)
+- Legacy `tailwind.config.ts` is still supported — if it exists, edit it there; do not create both
+- Never define the same token in both the CSS `@theme` block and the JS config — pick one and be consistent
+- Custom colours go under `theme.extend.colors` — never override the full default palette
+- Define shadows, border-radius, and font-family as tokens — never write raw values in templates
+
+## Spacing & Layout
+- Use the 4px base grid: `p-1`=4px, `p-2`=8px, `p-3`=12px, `p-4`=16px, `p-6`=24px, `p-8`=32px
+- Card internal padding: always `p-6` on desktop, `p-4` on mobile
+- Gap between grid/flex items: `gap-4` (16px) default, `gap-6` (24px) for section-level separation
+- Page horizontal padding: `px-4 sm:px-6 lg:px-8`
+- Never mix arbitrary values `[px]` with scale values unless generating dynamic widths from data
+
+## Colour Usage Rules
+- Use semantic colour names from the design system: `brand-*`, `success-*`, `warning-*`, `danger-*`
+- **Never** use raw Tailwind colours like `blue-600` directly — use `brand-600` from the extended palette
+- Text on white backgrounds: `text-gray-900` (headings), `text-gray-700` (body), `text-gray-500` (muted)
+- Amount colours: `text-success-700` for income/positive, `text-danger-700` for expense/negative
+- Border default: `border-gray-200`, hover: `border-gray-300`, focus: `border-brand-500` (via ring)
+- Background surfaces: `bg-white` (cards), `bg-gray-50` (page/table headers), `bg-gray-100` (subtle fills)
+
+## Typography Classes
+- Page titles: `text-2xl font-bold text-gray-900`
+- Section headings: `text-lg font-semibold text-gray-900`
+- Card titles: `text-base font-semibold text-gray-800`
+- Body text: `text-sm text-gray-700`
+- Muted/caption: `text-sm text-gray-500` or `text-xs text-gray-400`
+- Never use `font-weight` below `font-medium` (500) for interactive labels
+
+## Component Patterns — use exactly, do not invent variants
+
+### Card
+```html
+<div class="bg-white rounded-xl shadow-card border border-gray-100 p-6">
+```
+
+### Primary Button
+```html
+<button class="inline-flex items-center gap-2 px-4 py-2 bg-brand-600 text-white text-sm font-medium rounded-lg hover:bg-brand-700 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
+```
+
+### Secondary Button
+```html
+<button class="inline-flex items-center gap-2 px-4 py-2 bg-white text-gray-700 text-sm font-medium rounded-lg border border-gray-300 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-2 transition-colors">
+```
+
+### Text Input
+```html
+<input class="block w-full px-3 py-2 text-sm text-gray-900 bg-white border border-gray-300 rounded-lg placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent transition">
+```
+
+### Invalid Input
+```html
+<input class="block w-full px-3 py-2 text-sm text-gray-900 bg-white border border-danger-500 rounded-lg focus:outline-none focus:ring-2 focus:ring-danger-500 focus:border-transparent transition">
+<p class="mt-1 text-xs text-danger-500">Error message</p>
+```
+
+### Table
+```html
+<div class="overflow-x-auto rounded-xl border border-gray-200">
+  <table class="min-w-full divide-y divide-gray-200">
+    <thead class="bg-gray-50">
+      <tr><th class="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+    <tbody class="bg-white divide-y divide-gray-100">
+      <tr class="hover:bg-gray-50 transition-colors">
+        <td class="px-4 py-3 text-sm text-gray-700">
+```
+
+### Badge
+```html
+<!-- Success -->  <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-success-50 text-success-700">
+<!-- Warning -->  <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-warning-50 text-warning-700">
+<!-- Danger -->   <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-danger-50 text-danger-700">
+<!-- Gray -->     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-700">
+```
+
+### Progress Bar
+```html
+<div class="w-full bg-gray-100 rounded-full h-2">
+  <div class="h-2 rounded-full transition-all duration-500"
+       [style.width.%]="pct"
+       [class]="pct >= 100 ? 'bg-danger-500' : pct >= 75 ? 'bg-warning-500' : 'bg-success-500'">
+  </div>
+</div>
+```
+
+### Modal Overlay
+```html
+<div class="fixed inset-0 z-40 bg-black/40 backdrop-blur-sm flex items-center justify-center p-4">
+  <div class="bg-white rounded-xl shadow-dropdown w-full max-w-lg p-6">
+```
+
+### Toast
+```html
+<div class="fixed bottom-4 right-4 z-50 flex items-center gap-3 px-4 py-3 bg-white rounded-xl shadow-dropdown border-l-4 border-success-500 min-w-[280px]">
+```
+
+## Responsive Rules
+- All grids: `grid-cols-1 sm:grid-cols-2 lg:grid-cols-3` — never jump from 1 to 3 without sm
+- Sidebar: visible as fixed column at `lg:` and above, hidden below with drawer/overlay
+- Tables: always wrap in `overflow-x-auto` — never assume the table fits the screen
+- Font sizes: do not change responsively unless the design specifically requires it
+- Touch targets: every button, link, and interactive element must be at least `min-h-[44px] min-w-[44px]`
+
+## Accessibility (a11y)
+- All icon-only buttons must have `aria-label="..."`
+- All form inputs must have a `<label>` with matching `for`/`id` pair or `aria-label`
+- Modals must trap focus and have `role="dialog"` and `aria-modal="true"`
+- Colour contrast: never use a text colour below 4.5:1 contrast ratio against its background
+- Loading states: add `aria-busy="true"` to containers that are loading
+
+## Animation & Transitions
+- Use `transition-colors` on all hover colour changes
+- Use `transition-all duration-500` for progress bars and expanding elements
+- Use `transition-transform` for slide-in panels and drawers
+- Keep animations subtle — max `duration-300` for UI feedback, `duration-500` for layout changes
+- Always respect `prefers-reduced-motion` — wrap animations in `motion-safe:animate-*`
+
+## Class Ordering (enforce with Prettier Tailwind plugin)
+Layout → Display → Position → Box Model → Typography → Visual → Interactive → State
+Example: `flex items-center gap-3 px-4 py-2 text-sm font-medium bg-brand-600 text-white rounded-lg hover:bg-brand-700 transition-colors`
+
+## What NOT to do
+- ❌ Never write `style="color: #2563eb"` — use `text-brand-600`
+- ❌ Never write `class="text-blue-600"` — use `text-brand-600` from the design system
+- ❌ Never add `!important` to any class
+- ❌ Never use `w-[327px]` arbitrary values for layout — use grid/flex
+- ❌ Never create a separate `.scss` or `.css` component file for styling
+- ❌ Never use `@apply` to create semantic class names — keep utilities in templates

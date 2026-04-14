@@ -1,0 +1,14 @@
+---
+description: Keep EXECUTION_PLAN.md aligned with real progress after substantive work
+alwaysApply: true
+---
+
+# Execution plan maintenance
+
+After a substantive FinTrack session (code, infra, or material planning), update [EXECUTION_PLAN.md](../../EXECUTION_PLAN.md):
+
+1. **Resume here** — `Last updated`, `Repository state`, `Next action`, `Blockers`
+2. **Phase checkboxes** — mark **B\***, **C\***, **D\***, **E\*** items done when verified
+3. **Progress log** — add one row (newest first): date, phase IDs, outcome, commands or notes
+
+If no progress was made, do not change the plan file.

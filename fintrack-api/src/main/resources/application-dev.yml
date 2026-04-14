@@ -1,0 +1,30 @@
+spring:
+  datasource:
+    url: jdbc:mysql://${DB_HOST:localhost}:${DB_PORT:3306}/${DB_NAME:fintrack}?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+    username: ${DB_USER:fintrack_user}
+    password: ${DB_PASSWORD:fintrack_pass}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    show-sql: true
+
+jwt:
+  secret: ${JWT_SECRET:dev-secret-change-me-in-prod-min-256-bits-xxxxxxxxxxxxxxxx}
+  access-ttl-minutes: ${JWT_ACCESS_TTL_MINUTES:15}
+  refresh-ttl-days: ${JWT_REFRESH_TTL_DAYS:7}
+
+cors:
+  allowed-origins: ${ALLOWED_ORIGINS:http://localhost:4200}
+
+aws:
+  region: ${AWS_REGION:af-south-1}
+  s3:
+    bucket: ${AWS_S3_BUCKET:fintrack-reports-dev}
+  lambda:
+    pdf-function: ${AWS_LAMBDA_PDF_FUNCTION:fintrack-pdf-generator}
+  ses:
+    from-address: ${SES_FROM_ADDRESS:noreply@localhost}
+
+logging:
+  level:
+    com.fintrack: DEBUG
+    org.springframework.security: DEBUG
