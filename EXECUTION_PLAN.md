@@ -15,11 +15,11 @@ Living document: update **Progress log** and checkboxes after each session so yo
 | Field | Value |
 |--------|--------|
 | **Last updated** | 2026-04-14 |
-| **Repository state** | Requirements + Cursor rules only; **no** `fintrack-api/`, `fintrack-ui/`, or `fintrack-lambdas/` yet |
-| **Next action** | Start **B1** — Spring Boot scaffold under `fintrack-api/` per BACKEND §3 + §2 |
+| **Repository state** | Scaffold complete; `fintrack-api/` builds, app starts on port 8081; CI workflow added |
+| **Next action** | Start **B2** — Flyway migrations V1–V8 (BACKEND §4–5) |
 | **Blockers** | None |
 
-**Start of next session:** open BACKEND_REQUIREMENTS.md §3 (structure) and §6 (endpoints outline); implement B1 until `mvn -q -DskipTests package` succeeds.
+**Start of next session:** read BACKEND_REQUIREMENTS.md §4 (schema) and §5 (migrations); create V1–V8 SQL files until app starts with tables created.
 
 ---
 
@@ -31,10 +31,25 @@ Living document: update **Progress log** and checkboxes after each session so yo
 
 ---
 
+## Branching strategy (GitHub Flow)
+
+| Branch | Purpose | CI runs | Deploys to |
+|--------|---------|---------|------------|
+| `main` | Always deployable | Build + test + deploy | **Production** |
+| `feature/*`, `fix/*`, `chore/*` | Work in progress | Build + test only | — |
+
+**Workflow:**
+1. Create branch from `main` (e.g. `feature/auth-module`)
+2. Push commits → CI runs **build + test** (`.github/workflows/ci.yml`)
+3. Open PR to `main` → review
+4. Merge → deploy workflow runs (added in B13/C13)
+
+---
+
 ## Phase A — Monorepo skeleton (optional first commit)
 
-- [ ] **A.0** Add top-level folders to match [README.md](./README.md) architecture: `fintrack-api/`, `fintrack-ui/`, `fintrack-lambdas/` (can hold `.gitkeep` until populated).
-- [ ] **A.1** Add root `.gitignore` suited to Java, Node, Angular, and IDE artifacts if not already present.
+- [x] **A.0** Add top-level folders to match [README.md](./README.md) architecture: `fintrack-api/`, `fintrack-ui/`, `fintrack-lambdas/` (can hold `.gitkeep` until populated).
+- [x] **A.1** Add root `.gitignore` suited to Java, Node, Angular, and IDE artifacts if not already present.
 
 ---
 
@@ -42,7 +57,7 @@ Living document: update **Progress log** and checkboxes after each session so yo
 
 Aligned with README “Build Order” and BACKEND §3–8, §11–14.
 
-- [ ] **B1** Project scaffold + `pom.xml` (Spring Boot 3.3, Java 21) + `FinTrackApplication.java` + `application.yml` / `application-dev.yml` / `application-prod.yml` (BACKEND §3, §14).
+- [x] **B1** Project scaffold + `pom.xml` (Spring Boot 3.3, Java 21) + `FinTrackApplication.java` + `application.yml` / `application-dev.yml` / `application-prod.yml` (BACKEND §3, §14).
 - [ ] **B2** Flyway migrations **V1–V8** in `src/main/resources/db/migration/` (BACKEND §4–5).
 - [ ] **B3** Common layer: `ApiResponse`, `PagedResponse`, `GlobalExceptionHandler`, domain exceptions, `RequestLoggingAspect` (BACKEND §3 `common/`, §11).
 - [ ] **B4** Auth module: register, login, refresh, logout — JWT + refresh persistence, BCrypt, Spring Security filter chain (BACKEND §6.1, §7).
@@ -101,6 +116,7 @@ Append a row after each significant session (newest first).
 
 | Date | Phase / IDs | Outcome | Commands / notes |
 |------|-------------|---------|------------------|
+| 2026-04-14 | A.0, A.1, B1 | Scaffold complete, CI workflow added | `mvnw -DskipTests package` ✓, `spring-boot:run` ✓, PR #1 |
 | 2026-04-14 | — | Plan file created; codebase not scaffolded yet | — |
 
 ---
