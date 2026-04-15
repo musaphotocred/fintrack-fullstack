@@ -8,7 +8,7 @@ spring:
     show-sql: true
 
 jwt:
-  secret: ${JWT_SECRET:dev-secret-change-me-in-prod-min-256-bits-xxxxxxxxxxxxxxxx}
+  secret: ${JWT_SECRET:ZGV2LXNlY3JldC1jaGFuZ2UtbWUtaW4tcHJvZC1taW4tMjU2LWJpdHM=}
   access-ttl-minutes: ${JWT_ACCESS_TTL_MINUTES:15}
   refresh-ttl-days: ${JWT_REFRESH_TTL_DAYS:7}
 
