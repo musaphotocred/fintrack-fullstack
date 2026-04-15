@@ -1,25 +1,68 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
+    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+
+    <springProperty scope="context" name="appName" source="spring.application.name" defaultValue="fintrack-api"/>
+
+    <!-- Console appender for development -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] [%X{traceId:-}] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- JSON appender for production (CloudWatch compatible) -->
+    <appender name="JSON" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+            <includeMdcKeyName>traceId</includeMdcKeyName>
+            <includeMdcKeyName>userId</includeMdcKeyName>
+            <customFields>{"app":"${appName}"}</customFields>
+            <fieldNames>
+                <timestamp>timestamp</timestamp>
+                <thread>thread</thread>
+                <logger>logger</logger>
+                <level>level</level>
+                <message>message</message>
+                <stackTrace>stack_trace</stackTrace>
+            </fieldNames>
+            <throwableConverter class="net.logstash.logback.stacktrace.ShortenedThrowableConverter">
+                <maxDepthPerThrowable>30</maxDepthPerThrowable>
+                <maxLength>2048</maxLength>
+                <shortenedClassNameLength>20</shortenedClassNameLength>
+                <exclude>^sun\.reflect\..*\.invoke</exclude>
+                <exclude>^net\.sf\.cglib\.proxy\.MethodProxy\.invoke</exclude>
+                <rootCauseFirst>true</rootCauseFirst>
+            </throwableConverter>
+        </encoder>
+    </appender>
+
+    <!-- Development profile: readable console output -->
     <springProfile name="dev">
-        <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
-            <encoder>
-                <pattern>%d{HH:mm:ss.SSS} %highlight(%-5level) [%thread] %cyan(%logger{36}) - %msg%n</pattern>
-            </encoder>
-        </appender>
         <root level="INFO">
             <appender-ref ref="CONSOLE"/>
         </root>
+
+        <logger name="com.fintrack" level="DEBUG"/>
+        <logger name="org.springframework.security" level="DEBUG"/>
+        <logger name="org.hibernate.SQL" level="DEBUG"/>
+        <logger name="org.hibernate.type.descriptor.sql" level="TRACE"/>
     </springProfile>
 
+    <!-- Production profile: JSON structured logging -->
     <springProfile name="prod">
-        <appender name="JSON" class="ch.qos.logback.core.ConsoleAppender">
-            <encoder class="net.logstash.logback.encoder.LogstashEncoder">
-                <includeMdcKeyName>requestId</includeMdcKeyName>
-                <includeMdcKeyName>userId</includeMdcKeyName>
-            </encoder>
-        </appender>
         <root level="INFO">
             <appender-ref ref="JSON"/>
+        </root>
+
+        <logger name="com.fintrack" level="INFO"/>
+        <logger name="org.springframework" level="WARN"/>
+        <logger name="org.hibernate" level="WARN"/>
+    </springProfile>
+
+    <!-- Default profile (fallback) -->
+    <springProfile name="default">
+        <root level="INFO">
+            <appender-ref ref="CONSOLE"/>
         </root>
     </springProfile>
 </configuration>
