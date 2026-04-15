@@ -15,11 +15,11 @@ Living document: update **Progress log** and checkboxes after each session so yo
 | Field | Value |
 |--------|--------|
 | **Last updated** | 2026-04-15 |
-| **Repository state** | B3 complete — Common layer added, PR #4 open awaiting merge |
-| **Next action** | Merge PR #4, then start **B4** — Auth module (BACKEND §6.1, §7) |
+| **Repository state** | B4 complete — Auth module with JWT, rate limiting, PR #5 open |
+| **Next action** | Merge PR #5, then start **B5** — User module (BACKEND §6.2) |
 | **Blockers** | None |
 
-**Start of next session:** merge PR #4, checkout main, pull, then implement UserEntity, JwtService, JwtAuthFilter, RefreshToken handling, AuthController, SecurityConfig per BACKEND §6.1 and §7.
+**Start of next session:** merge PR #5, checkout main, pull, then implement UserController with /me profile, update name, password change, soft-delete per BACKEND §6.2.
 
 ---
 
@@ -60,7 +60,7 @@ Aligned with README “Build Order” and BACKEND §3–8, §11–14.
 - [x] **B1** Project scaffold + `pom.xml` (Spring Boot 3.3, Java 21) + `FinTrackApplication.java` + `application.yml` / `application-dev.yml` / `application-prod.yml` (BACKEND §3, §14).
 - [x] **B2** Flyway migrations **V1–V8** in `src/main/resources/db/migration/` (BACKEND §4–5).
 - [x] **B3** Common layer: `ApiResponse`, `PagedResponse`, `GlobalExceptionHandler`, domain exceptions, `RequestLoggingAspect` (BACKEND §3 `common/`, §11).
-- [ ] **B4** Auth module: register, login, refresh, logout — JWT + refresh persistence, BCrypt, Spring Security filter chain (BACKEND §6.1, §7).
+- [x] **B4** Auth module: register, login, refresh, logout — JWT + refresh persistence, BCrypt, Spring Security filter chain (BACKEND §6.1, §7).
 - [ ] **B5** User module: `/api/v1/users/me` profile, update name, password, soft-delete (BACKEND §6.2).
 - [ ] **B6** Accounts CRUD + ownership + balance field rules (BACKEND §6.3).
 - [ ] **B7** Categories list/create/update/delete with system vs custom rules (BACKEND §6.4).
@@ -116,7 +116,8 @@ Append a row after each significant session (newest first).
 
 | Date | Phase / IDs | Outcome | Commands / notes |
 |------|-------------|---------|------------------|
-| 2026-04-15 | B3 | Common layer complete | ApiResponse, PagedResponse, exceptions, GlobalExceptionHandler, TraceIdFilter, RequestLoggingAspect, logback-spring.xml — PR #4 open |
+| 2026-04-15 | B4 | Auth module complete | UserEntity, JwtService, JwtAuthFilter, RefreshToken, AuthService, AuthController, SecurityConfig, CorsConfig, RateLimitConfig, @ValidPassword — PR #5 open |
+| 2026-04-15 | B3 | Common layer complete | ApiResponse, PagedResponse, exceptions, GlobalExceptionHandler, TraceIdFilter, RequestLoggingAspect, logback-spring.xml — PR #4 merged |
 | 2026-04-14 | B2 | Flyway migrations V1–V8 complete | All 8 migrations applied, PR #3 merged |
 | 2026-04-14 | A.0, A.1, B1 | Scaffold complete, CI workflow added | `mvnw -DskipTests package` ✓, `spring-boot:run` ✓, PR #1, PR #2 |
 | 2026-04-14 | — | Plan file created; codebase not scaffolded yet | — |
